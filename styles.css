@@ -1,0 +1,12 @@
+#y0 {
+    margin-left: 80px;
+}
+button {
+    margin-top: 20px;
+    margin-left: -2px;
+    margin-right: -2px;
+}
+
+button.active {
+    filter: brightness(60%)
+}
