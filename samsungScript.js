@@ -1,13 +1,134 @@
-
-// Dimensions
+        
+// Global Variables
 
 const margin = { top: 70, right: 80, bottom: 100, left: 80 };
 const width = 1200 - margin.left - margin.right;
 const height = 540 - margin.top - margin.bottom;
 const amtYears = 25
-          
+const fontSize = "14px"
+const creditSize = "9px"
+const titleSize = "25px"
+let currYear = 0
+
 const container = d3.select("#chart_container")
 document.getElementById('y0').classList.add("active")
+
+// Set Annotations
+
+const annotationValues = [
+  [],
+  [],
+  [],
+  [],
+  [
+    {
+      note : {
+        label : "Samsung Stock Prices stopped decreasing and started increasing due to strong growth in memory chip sales", 
+        title : "Memory Chip Sale"
+      },
+      x : 560,
+      y : 135,
+      dx : -50,
+      dy : 30,
+    }
+  ],
+  [],
+  [],
+  [],
+  [],
+  [],
+  [
+    {
+      note : {
+        label : "There was an increase in electronic demand when the global financial crisis ended", 
+        title : "Global Financial Crisis Rebound"
+      },
+      x : 100,
+      y : 76,
+      dx : 50,
+      dy : 30,
+    }
+  ],
+  [],
+  [],
+  [
+    {
+      note : {
+        label : "Samsung Stock Prices increaed due to release of the Galaxy S4", 
+        title : "Galaxy S4 release"
+      },
+      x : 332,
+      y : 21,
+      dx : -50,
+      dy : 80,
+    }
+  ],
+  [],
+  [],
+  [
+    {
+      note : {
+        label : "Samsung Stock Prices decreases due to the Galaxy 7 battery exploding", 
+        title : "Galaxy 7 Battery Explosion"
+      },
+      x : 730,
+      y : 65,
+      dx : 60,
+      dy : 70,
+    }
+  ],
+  [],
+  [
+    {
+      note : {
+        label : "Samsung Stock Prices surged due to higher demands in their memory chips", 
+        title : "High Demand in Memory Chips"
+      },
+      x : 110,
+      y : 62,
+      dx : 50,
+      dy : 30,
+    },
+    {
+      note : {
+        label : "Samsung experienced stock price decline due to slowing semiconductor demand/smarphone sales", 
+        title : "Slower Global Smartphone Sales"
+      },
+      x : 777,
+      y : 43,
+      dx : -50,
+      dy : 80,
+    }
+  ],
+  [],
+  [
+    {
+      note : {
+        label : "Samsung Stock Prices gradually increases due increase in demand for displays/memory chips during Covid-19 pandemic", 
+        title : "Covid-19 Stock Growth"
+      },
+      x : 290,
+      y : 142.5,
+      dx : 200,
+      dy : 20,
+    }
+  ],
+  [
+    {
+      note : {
+        label : "Samsung had decrease in stock prices due to supply chain and semiconductor issues", 
+        title : "Supply Chain Issues"
+      },
+      x : 81,
+      y : 35,
+      dx : 50,
+      dy : 80,
+    }
+  ],
+  [],
+  [],
+  [],
+]
 
 // Load Dataset
 
@@ -43,7 +164,24 @@ d3.csv("SamsungDataset.csv").then(function (data) {
     });
   }
 
+  let nextBtn = document.getElementById(`next`)
+  nextBtn.addEventListener("click", function () {
+    if (currYear !== 24) {
+      for (let y = 0; y < 25; y++) {
+        document.getElementById(`y${y}`).classList.remove("active")
+      }
+
+      document.getElementById(`y${currYear + 1}`).classList.add("active")
+
+      updateYear(currYear + 1)
+    }
+  })
+
+  // create helper function
+
   function updateYear(year) {
+
+    currYear = year
 
     // Scales
 
@@ -65,30 +203,25 @@ d3.csv("SamsungDataset.csv").then(function (data) {
     x.domain(d3.extent(yearly_data[year], d => d.Date));
     y.domain([0, d3.max(yearly_data[year], d => Number(d.Open))]);
 
-    console.log(yearly_data[year])
-
-    console.log(d3.max(yearly_data[year], d => d.Open))
-
     // remove previous data
     svg.selectAll("path").remove()
     svg.selectAll("g").remove()
-
 
     // add x-axis and y-axis
 
     svg.append("g")
       .attr("transform", `translate(0, ${height})`)
-      .style("font-size", "14px")
+      .style("font-size", fontSize)
       .call(d3.axisBottom(x)
         .ticks(d3.timeMonth.every(1))
         .tickFormat(d3.timeFormat("%b %Y")))
       .call(g => g.select(".domain").remove())
       .selectAll(".tick line")
       .style("stroke-opacity", 0)
-    svg.selectAll(".tick text").attr("fill", "#777")    
+    svg.selectAll(".tick text").attr("fill", "#888")    
 
     svg.append("g")
-      .style("font-size", "14px")
+      .style("font-size", fontSize)
       .call(d3.axisLeft(y)
               .ticks((d3.max(data, d => d.Open)) / 1000)
               .tickFormat(d => {
@@ -98,7 +231,7 @@ d3.csv("SamsungDataset.csv").then(function (data) {
               .tickPadding(10))
       .call(g => g.select(".domain").remove())
       .selectAll(".tick text")
-      .style("fill", "#777")
+      .style("fill", "#888")
       .style("visibility", (d, i, n) => {
         if (i === 0) return "hidden";
         else return "visible";
@@ -111,26 +244,21 @@ d3.csv("SamsungDataset.csv").then(function (data) {
       .join("line")
       .attr("x1", d => x(d))
       .attr("x2", d => x(d))
-      .attr("y1", d => 0)
-      .attr("y2", d => height)
-      .attr("stroke", "#e0e0e0")
+      .attr("y1", 0)
+      .attr("y2", height)
+      .attr("stroke", "#d1d1d1")
       .attr("stroke-width", 0.5)
 
     svg.selectAll("yGrid")
       .data(y.ticks((d3.max(data, d => d.Open)) / 1000).slice(1))
       .join("line")
-      .attr("x1", d => 0)
-      .attr("x2", d => width)
+      .attr("x1", 0)
+      .attr("x2", width)
       .attr("y1", d => y(d))
       .attr("y2", d => y(d))
-      .attr("stroke", "#e0e0e0")
+      .attr("stroke", "#d1d1d1")
       .attr("stroke-width", 0.5)
 
-    // define line generator 
-
-    const line = d3.line()
-                  .x(d => x(d.Date))
-                  .y(d => y(d.Open));
 
     // Include line in svg
 
@@ -139,14 +267,22 @@ d3.csv("SamsungDataset.csv").then(function (data) {
       .attr("fill", "none")
       .attr("stroke", "steelblue")
       .attr("stroke-width", 1)
-      .attr("d", line)
+      .attr("d", 
+        d3.line()
+          .x(d => x(d.Date))
+          .y(d => y(d.Open))
+      )
+
+    const makeAnnotations = d3.annotation().annotations(annotationValues[year])
+    svg.append("g").call(makeAnnotations)
+
 
     // Add title and chart axis
     svg.append("text")
       .attr("class", "chart_title")
       .attr("x", margin.left -115)
       .attr("y", margin.top - 100)
-      .style("font-size", "25px")
+      .style("font-size", titleSize)
       .style("font-weight", "bold")
       .style("font-family", "sans-serif")
       .text("Samsung Stock Price ($) per Year") 
@@ -158,8 +294,8 @@ d3.csv("SamsungDataset.csv").then(function (data) {
       .attr("y", -margin.left + 10)
       .attr("dy", "1em")
       .style("text-anchor", "middle")
-      .style("font-size", "14px")
-      .style("fill", "#777")
+      .style("font-size", fontSize)
+      .style("fill", "#888")
       .style("font-family", "sans-serif")
       .text("Samsung Stock Price ($)") 
 
@@ -168,7 +304,7 @@ d3.csv("SamsungDataset.csv").then(function (data) {
       .attr("class", "source_credit")
       .attr("x", 0)
       .attr("y", height + margin.bottom - 13)
-      .style("font-size", "9px")
+      .style("font-size", creditSize)
       .style("font-family", "sans-serif")
       .text("Source: https://www.kaggle.com/datasets/mayankanand2701/samsung-stock-price-dataset")
     
@@ -176,7 +312,7 @@ d3.csv("SamsungDataset.csv").then(function (data) {
       .attr("class", "source_credit")
       .attr("x", 0)
       .attr("y", height + margin.bottom - 3)
-      .style("font-size", "9px")
+      .style("font-size", creditSize)
       .style("font-family", "sans-serif")
       .text("Format Inspired by: https://www.youtube.com/watch?v=Wk8pIxcidv8")
 
