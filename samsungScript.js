@@ -1,9 +1,12 @@
         
 // Global Variables
 
-const margin = { top: 70, right: 80, bottom: 100, left: 80 };
-const width = 1200 - margin.left - margin.right;
-const height = 540 - margin.top - margin.bottom;
+const marginLeft = 80;
+const marginRight = 80;
+const marginTop = 70;
+const marginBottom = 100;
+const width = 1200 - marginLeft - marginRight;
+const height = 540 - marginTop - marginBottom;
 const amtYears = 25
 const fontSize = "14px"
 const creditSize = "9px"
@@ -194,10 +197,10 @@ d3.csv("SamsungDataset.csv").then(function (data) {
 
     // Set chart 
     const svg = container.append("svg")
-                          .attr("width", width + margin.left + margin.right) 
-                          .attr("height", height + margin.top + margin.bottom)
+                          .attr("width", width + marginLeft + marginRight) 
+                          .attr("height", height + marginTop + marginBottom)
                         .append("g")
-                          .attr("transform", `translate(${margin.left}, ${margin.top})`);
+                          .attr("transform", `translate(${marginLeft}, ${marginTop})`);
 
     // add x and y domains
     x.domain(d3.extent(yearly_data[year], d => d.Date));
@@ -280,8 +283,8 @@ d3.csv("SamsungDataset.csv").then(function (data) {
     // Add title and chart axis
     svg.append("text")
       .attr("class", "chart_title")
-      .attr("x", margin.left -115)
-      .attr("y", margin.top - 100)
+      .attr("x", marginLeft - 115)
+      .attr("y", marginTop - 100)
       .style("font-size", titleSize)
       .style("font-weight", "bold")
       .style("font-family", "sans-serif")
@@ -291,7 +294,7 @@ d3.csv("SamsungDataset.csv").then(function (data) {
       .attr("class", "y_axis_title")
       .attr("transform", "rotate(-90)")
       .attr("x", -height / 2)
-      .attr("y", -margin.left + 10)
+      .attr("y", -marginLeft + 10)
       .attr("dy", "1em")
       .style("text-anchor", "middle")
       .style("font-size", fontSize)
@@ -303,7 +306,7 @@ d3.csv("SamsungDataset.csv").then(function (data) {
     svg.append("text")
       .attr("class", "source_credit")
       .attr("x", 0)
-      .attr("y", height + margin.bottom - 13)
+      .attr("y", height + marginBottom - 13)
       .style("font-size", creditSize)
       .style("font-family", "sans-serif")
       .text("Source: https://www.kaggle.com/datasets/mayankanand2701/samsung-stock-price-dataset")
@@ -311,7 +314,7 @@ d3.csv("SamsungDataset.csv").then(function (data) {
     svg.append("text")
       .attr("class", "source_credit")
       .attr("x", 0)
-      .attr("y", height + margin.bottom - 3)
+      .attr("y", height + marginBottom - 3)
       .style("font-size", creditSize)
       .style("font-family", "sans-serif")
       .text("Format Inspired by: https://www.youtube.com/watch?v=Wk8pIxcidv8")
